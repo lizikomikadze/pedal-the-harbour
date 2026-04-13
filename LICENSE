@@ -1,17 +1,3 @@
-# Pedal the Harbour
-
-A modern, desktop-first interactive digital guidebook:
-**“Pedal the Harbour: A One-Day Sustainable Cycling Guide from Tai Wai to Tai Po Waterfront in Hong Kong.”**
-
-It includes an interactive route map, timeline-style stop panel, rentals/food/tips sections, and a carbon calculator (cycling vs driving).
-
-## Run locally
-```bash
-python3 -m http.server 8000
-
-### 2) `LICENSE` file (MIT — recommended)
-Create a new file named **`LICENSE`** with:
-```text
 MIT License
 
 Copyright (c) 2026 Lizi Mikadze
@@ -33,24 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-# Contributing
-
-Thanks for your interest in improving Pedal the Harbour.
-
-## Ways to contribute
-- Report a bug (screenshots help)
-- Suggest content improvements (stops, tips, safety, sustainability)
-- Improve design/accessibility/performance
-- Add more stops or better route accuracy
-
-## How to propose changes
-1. Fork the repository
-2. Create a new branch (e.g. `feature/better-stops`)
-3. Make changes
-4. Open a Pull Request (PR) with a short description and screenshots if UI changed
-
-## Style notes
-- Keep the UI minimal and accessible
-- Prefer small, readable JS functions
-- Avoid adding heavy dependencies unless necessary
