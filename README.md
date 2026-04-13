@@ -19,3 +19,4 @@ Then open `http://localhost:8000`.
 - **Stops + route**: edit the `STOPS` array in `main.js` (names, coordinates, images, text, distances).
 - **Look & feel**: edit `styles.css`.
 
+----------------------------------------
