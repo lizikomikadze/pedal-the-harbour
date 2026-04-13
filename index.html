@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      Pedal the Harbour — Tai Wai to Tai Po Waterfront (One-Day Sustainable Cycling
+      Guide)
+    </title>
+    <meta
+      name="description"
+      content="A modern, aesthetic digital guidebook for a one-day sustainable cycling route from Tai Wai to Tai Po Waterfront in Hong Kong, featuring an interactive map, stop timeline, rentals, food, safety, and a carbon calculator."
+    />
+
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="preconnect" href="https://tile.openstreetmap.org" />
+
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <div class="brand__mark" aria-hidden="true">PT</div>
+          <div class="brand__text">
+            <div class="brand__title">Pedal the Harbour</div>
+            <div class="brand__subtitle">Tai Wai → Tai Po Waterfront</div>
+          </div>
+        </div>
+
+        <nav class="nav">
+          <a href="#route" class="nav__link">Route</a>
+          <a href="#rentals" class="nav__link">Bike rentals</a>
+          <a href="#food" class="nav__link">Food</a>
+          <a href="#calculator" class="nav__link">Carbon calculator</a>
+          <a href="#tips" class="nav__link">Tips & safety</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="hero__bg" aria-hidden="true"></div>
+        <div class="container hero__content">
+          <div class="hero__card">
+            <div class="hero__eyebrow">Digital Guidebook • One day • Sustainable</div>
+            <h1 class="hero__title">
+              Pedal the Harbour: A One‑Day Sustainable Cycling Guide from Tai Wai to Tai
+              Po Waterfront in Hong Kong
+            </h1>
+            <p class="hero__desc">
+              A minimal, app‑like guide for exploring Hong Kong by bike—lighter on
+              emissions, richer in scenery. Follow the route, tap stops like a
+              timeline, and compare cycling vs driving impact.
+            </p>
+
+            <div class="hero__actions">
+              <a class="button button--primary" href="#calculator" id="heroCalcBtn"
+                >Open carbon calculator</a
+              >
+              <button class="button button--ghost" id="heroStartBtn" type="button">
+                Explore the route
+              </button>
+            </div>
+
+            <div class="hero__meta">
+              <div class="pill">
+                <span class="pill__k">Distance</span>
+                <span class="pill__v" id="routeDistancePill">~18 km</span>
+              </div>
+              <div class="pill">
+                <span class="pill__k">Difficulty</span>
+                <span class="pill__v">Easy–Moderate</span>
+              </div>
+              <div class="pill">
+                <span class="pill__k">Best time</span>
+                <span class="pill__v">Morning → Sunset</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="route">
+        <div class="container">
+          <div class="section__head">
+            <div>
+              <h2 class="section__title">Route map</h2>
+              <p class="section__subtitle">
+                Tap a stop on the map to open a slide‑up panel—no popups, no clutter.
+              </p>
+            </div>
+            <div class="section__actions">
+              <button class="chip" id="fitRouteBtn" type="button">Fit route</button>
+              <button class="chip" id="openFirstStopBtn" type="button">
+                Start timeline
+              </button>
+            </div>
+          </div>
+
+          <div class="routeLayout">
+            <div class="mapCard" aria-label="Interactive cycling route map">
+              <div class="mapCard__top">
+                <div class="mapCard__title">Tai Wai → Science Park → Cozy Coffee → Tai Po Waterfront</div>
+                <div class="mapCard__hint" id="mapHint">
+                  Tip: click a stop marker, or a card on the right.
+                </div>
+              </div>
+              <div id="map" class="map" role="application" aria-label="Route map"></div>
+              <div class="mapCard__bottom">
+                <div class="miniStats">
+                  <div class="miniStat">
+                    <div class="miniStat__k">Estimated CO₂ saved</div>
+                    <div class="miniStat__v" id="co2SavedMini">~3.5 kg</div>
+                  </div>
+                  <div class="miniStat">
+                    <div class="miniStat__k">Estimated calories</div>
+                    <div class="miniStat__v" id="caloriesMini">~540 kcal</div>
+                  </div>
+                </div>
+                <button class="chip chip--primary" id="openCalculatorBtn" type="button">
+                  Calculate your impact
+                </button>
+              </div>
+            </div>
+
+            <aside class="sidePanel" aria-label="Stop previews">
+              <div class="sidePanel__head">
+                <h3 class="sidePanel__title">Key stops</h3>
+                <p class="sidePanel__subtitle">
+                  A smooth, app‑like timeline—open any stop.
+                </p>
+              </div>
+              <div class="stopCards" id="stopCards"></div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="rentals">
+        <div class="container">
+          <div class="section__head">
+            <div>
+              <h2 class="section__title">How to rent a bike</h2>
+              <p class="section__subtitle">
+                Choose local rentals for service and fit, or dockless for quick hops.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <article class="infoCard">
+              <h3 class="infoCard__title">Local rental shops</h3>
+              <p class="infoCard__text">
+                Best for comfort and safety: correct frame size, brakes check, helmet
+                availability, and route advice. Great if you’re doing the full day.
+              </p>
+              <ul class="list">
+                <li><b>Ask for</b>: helmet, lights, bell, phone holder.</li>
+                <li><b>Check</b>: brake bite, tire pressure, seat height, chain.</li>
+                <li><b>Bring</b>: ID (may be required), water, sunscreen.</li>
+              </ul>
+            </article>
+
+            <article class="infoCard">
+              <h3 class="infoCard__title">HelloRide (dockless)</h3>
+              <p class="infoCard__text">
+                Convenient for short segments if bikes are available nearby. A good
+                option if you want flexibility or you’re meeting friends mid‑route.
+              </p>
+              <ul class="list">
+                <li><b>Pros</b>: quick pickup/return, no shop hours.</li>
+                <li><b>Watch</b>: bike condition varies—do a quick safety check.</li>
+                <li><b>Be mindful</b>: park neatly and avoid blocking footpaths.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="food">
+        <div class="container">
+          <div class="section__head">
+            <div>
+              <h2 class="section__title">Breakfast & lunch (support local)</h2>
+              <p class="section__subtitle">
+                Simple, tasty stops along the way—prioritizing local businesses.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid3">
+            <article class="tile">
+              <div class="tile__media tile__media--breakfast" aria-hidden="true"></div>
+              <div class="tile__body">
+                <h3 class="tile__title">Breakfast near Tai Wai</h3>
+                <p class="tile__text">
+                  A classic HK start: pineapple bun + milk tea, or congee + youtiao.
+                  Bring a reusable bottle for iced drinks.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">Early</span><span class="tag">Local</span
+                  ><span class="tag">Quick</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile">
+              <div class="tile__media tile__media--lunch" aria-hidden="true"></div>
+              <div class="tile__body">
+                <h3 class="tile__title">Lunch near Pak Shek Kok / Science Park</h3>
+                <p class="tile__text">
+                  Refuel mid‑ride with a relaxed sit‑down meal where possible. If you
+                  do takeaway, ask for “no cutlery” and keep packaging minimal.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">Mid‑route</span><span class="tag">Refuel</span
+                  ><span class="tag">Low‑waste</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="tile">
+              <div class="tile__media tile__media--coffee" aria-hidden="true"></div>
+              <div class="tile__body">
+                <h3 class="tile__title">Coffee break: Cozy Coffee</h3>
+                <p class="tile__text">
+                  A quick caffeine + pastry stop. If you have one, bring a reusable
+                  cup, or choose dine‑in to avoid disposable lids and cups.
+                </p>
+                <div class="tagRow">
+                  <span class="tag">Quick stop</span><span class="tag">Local</span
+                  ><span class="tag">Low‑waste</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="calculator">
+        <div class="container">
+          <div class="section__head">
+            <div>
+              <h2 class="section__title">Carbon calculator</h2>
+              <p class="section__subtitle">
+                Compare emissions between cycling and driving for your chosen distance.
+              </p>
+            </div>
+          </div>
+
+          <div class="calcCard">
+            <form class="calc" id="calcForm">
+              <div class="calc__row">
+                <label class="field">
+                  <span class="field__label">Distance (km)</span>
+                  <input
+                    class="field__input"
+                    id="distanceKm"
+                    name="distanceKm"
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="0.1"
+                    value="18"
+                    required
+                  />
+                </label>
+
+                <label class="field">
+                  <span class="field__label">Car emissions factor</span>
+                  <select class="field__input" id="carFactor" name="carFactor">
+                    <option value="0.192" selected>Typical petrol car (0.192 kg CO₂/km)</option>
+                    <option value="0.171">Efficient small car (0.171 kg CO₂/km)</option>
+                    <option value="0.250">SUV / heavy traffic (0.250 kg CO₂/km)</option>
+                  </select>
+                </label>
+
+                <label class="field">
+                  <span class="field__label">Cycling calories (kcal/km)</span>
+                  <select class="field__input" id="kcalPerKm" name="kcalPerKm">
+                    <option value="25">Easy pace (25)</option>
+                    <option value="30" selected>Moderate pace (30)</option>
+                    <option value="38">Sporty pace (38)</option>
+                  </select>
+                </label>
+              </div>
+
+              <div class="calc__actions">
+                <button class="button button--primary" type="submit">Calculate</button>
+                <button class="button button--ghost" type="button" id="useRouteDistanceBtn">
+                  Use route distance
+                </button>
+              </div>
+            </form>
+
+            <div class="results" aria-live="polite">
+              <div class="result">
+                <div class="result__k">Driving emissions</div>
+                <div class="result__v" id="drivingEmissions">—</div>
+              </div>
+              <div class="result">
+                <div class="result__k">Cycling emissions</div>
+                <div class="result__v" id="cyclingEmissions">~0 kg</div>
+              </div>
+              <div class="result result--accent">
+                <div class="result__k">CO₂ saved</div>
+                <div class="result__v" id="co2Saved">—</div>
+              </div>
+              <div class="result">
+                <div class="result__k">Calories burned</div>
+                <div class="result__v" id="caloriesBurned">—</div>
+              </div>
+            </div>
+          </div>
+          <p class="footnote">
+            Estimates are approximate and depend on traffic, vehicle type, weather, and
+            cycling effort.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="tips">
+        <div class="container">
+          <div class="section__head">
+            <div>
+              <h2 class="section__title">Sustainability tips & cycling safety</h2>
+              <p class="section__subtitle">
+                Small habits make the ride safer and the route cleaner.
+              </p>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <article class="infoCard">
+              <h3 class="infoCard__title">Low‑waste riding</h3>
+              <ul class="list">
+                <li><b>Bring</b>: reusable bottle + a small tote for snacks.</li>
+                <li><b>Choose</b>: dine‑in when possible; decline disposable cutlery.</li>
+                <li><b>Refill</b>: top up water at stops instead of buying new bottles.</li>
+                <li><b>Leave no trace</b>: keep waterfronts and paths litter‑free.</li>
+              </ul>
+            </article>
+
+            <article class="infoCard">
+              <h3 class="infoCard__title">Basic cycling safety</h3>
+              <ul class="list">
+                <li><b>Helmet + lights</b>: especially if riding near sunset.</li>
+                <li><b>Keep left</b>: follow cycle track rules and be predictable.</li>
+                <li><b>Signal</b>: use hand signals; ring bell gently to pass.</li>
+                <li><b>Hydrate</b>: heat can sneak up—take short shade breaks.</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div class="footer__left">
+          <div class="footer__title">Pedal the Harbour</div>
+          <div class="footer__sub">
+            A polished, interactive travel guide combining tourism and sustainability.
+          </div>
+        </div>
+        <div class="footer__right">
+          <button class="chip" id="backToTopBtn" type="button">Back to top</button>
+        </div>
+      </div>
+    </footer>
+
+    <div class="scrim" id="scrim" hidden></div>
+    <section
+      class="sheet"
+      id="stopSheet"
+      aria-hidden="true"
+      aria-label="Stop details panel"
+    >
+      <div class="sheet__handle" aria-hidden="true"></div>
+      <div class="sheet__head">
+        <div>
+          <div class="sheet__eyebrow" id="sheetEyebrow">Stop</div>
+          <h3 class="sheet__title" id="sheetTitle">—</h3>
+        </div>
+        <button class="iconBtn" type="button" id="sheetCloseBtn" aria-label="Close">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+
+      <div class="sheet__media" id="sheetMedia" aria-label="Stop media"></div>
+
+      <div class="sheet__body">
+        <div class="sheetGrid">
+          <div class="sheetBlock">
+            <div class="sheetBlock__k">Overview</div>
+            <div class="sheetBlock__v" id="sheetOverview">—</div>
+          </div>
+          <div class="sheetBlock">
+            <div class="sheetBlock__k">Sustainability insight</div>
+            <div class="sheetBlock__v" id="sheetSustainability">—</div>
+          </div>
+          <div class="sheetBlock">
+            <div class="sheetBlock__k">Things to do</div>
+            <ul class="sheetList" id="sheetThings"></ul>
+          </div>
+          <div class="sheetBlock">
+            <div class="sheetBlock__k">Eco‑friendly tips</div>
+            <ul class="sheetList" id="sheetEcoTips"></ul>
+          </div>
+        </div>
+
+        <div class="sheetStats">
+          <div class="statPill">
+            <div class="statPill__k">Estimated CO₂ saved</div>
+            <div class="statPill__v" id="sheetCo2Saved">—</div>
+          </div>
+          <div class="statPill">
+            <div class="statPill__k">Calories burned</div>
+            <div class="statPill__v" id="sheetCalories">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sheet__nav">
+        <button class="button button--ghost" type="button" id="prevStopBtn">
+          Previous
+        </button>
+        <button class="button button--primary" type="button" id="nextStopBtn">
+          Next
+        </button>
+      </div>
+    </section>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="./main.js"></script>
+  </body>
+</html>
